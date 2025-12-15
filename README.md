@@ -11,8 +11,8 @@ The dev flow requires this as input:
 Here's the dev flow:
 
 1. Human writes issues decribing the feature, using `@claude` to trigger Claude.
-1. Claude implements the feature using test driven development, and pushes the changes to a remote branch, updating the issue
-1. Human creates PR and provides feedback in the PR
+1. Claude implements the feature using test driven development, and pushes the changes to a remote branch, updating the issue with a link to creating a PR
+1. Human creates PR by clicking the link and provides feedback in the PR
 1. CI/CD deploys Javascript app to gh-pages as part of the PR
 1. Claude reviews PR and updates (may iterate with human in PR)
 1. After Human approves, Claude is responsible for merging the PR to main (fixing conflicts, etc.)
