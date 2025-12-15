@@ -2,6 +2,7 @@
  * @file The main entry point for the game.
  */
 
+import './styles.css';
 import { createGameState, GameStatus } from './game.js';
 import { render } from './renderer.js';
 import { handleInput } from './input.js';
