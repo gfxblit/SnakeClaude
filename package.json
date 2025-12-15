@@ -1,0 +1,26 @@
+{
+  "name": "snakeclaude",
+  "version": "1.0.0",
+  "description": "This is an agentic development flow to make the Snake game, written in Javascript.",
+  "main": "main.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gfxblit/BreakoutClaude.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gfxblit/BreakoutClaude/issues"
+  },
+  "homepage": "https://github.com/gfxblit/BreakoutClaude#readme",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
