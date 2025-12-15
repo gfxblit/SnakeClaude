@@ -1,3 +1,5 @@
+import { Direction, DirectionVector } from './game.js';
+
 /**
  * @file Handles player input.
  */
@@ -11,23 +13,23 @@ export function handleInput(gameState) {
   const handleKeyDown = (e) => {
     switch (e.key) {
       case 'ArrowUp':
-        if (gameState.snake.direction.y === 0) {
-          gameState.snake.direction = { x: 0, y: -1 };
+        if (gameState.snake.direction !== Direction.DOWN) {
+          gameState.snake.direction = Direction.UP;
         }
         break;
       case 'ArrowDown':
-        if (gameState.snake.direction.y === 0) {
-          gameState.snake.direction = { x: 0, y: 1 };
+        if (gameState.snake.direction !== Direction.UP) {
+          gameState.snake.direction = Direction.DOWN;
         }
         break;
       case 'ArrowLeft':
-        if (gameState.snake.direction.x === 0) {
-          gameState.snake.direction = { x: -1, y: 0 };
+        if (gameState.snake.direction !== Direction.RIGHT) {
+          gameState.snake.direction = Direction.LEFT;
         }
         break;
       case 'ArrowRight':
-        if (gameState.snake.direction.x === 0) {
-          gameState.snake.direction = { x: 1, y: 0 };
+        if (gameState.snake.direction !== Direction.LEFT) {
+          gameState.snake.direction = Direction.RIGHT;
         }
         break;
     }
@@ -35,7 +37,44 @@ export function handleInput(gameState) {
 
   document.addEventListener('keydown', handleKeyDown);
 
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  const handleTouchStart = (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+
+    const dx = touchEndX - touchStartX;
+    const dy = touchEndY - touchStartY;
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+      // Horizontal swipe
+      if (dx > 0 && gameState.snake.direction !== Direction.LEFT) {
+        gameState.snake.direction = Direction.RIGHT;
+      } else if (dx < 0 && gameState.snake.direction !== Direction.RIGHT) {
+        gameState.snake.direction = Direction.LEFT;
+      }
+    } else {
+      // Vertical swipe
+      if (dy > 0 && gameState.snake.direction !== Direction.UP) {
+        gameState.snake.direction = Direction.DOWN;
+      } else if (dy < 0 && gameState.snake.direction !== Direction.DOWN) {
+        gameState.snake.direction = Direction.UP;
+      }
+    }
+  };
+
+  document.addEventListener('touchstart', handleTouchStart);
+  document.addEventListener('touchend', handleTouchEnd);
+
   return () => {
     document.removeEventListener('keydown', handleKeyDown);
+    document.removeEventListener('touchstart', handleTouchStart);
+    document.removeEventListener('touchend', handleTouchEnd);
   };
 }

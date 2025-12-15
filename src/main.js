@@ -7,7 +7,7 @@ import { createGameState, GameStatus } from './game.js';
 import { render } from './renderer.js';
 import { handleInput } from './input.js';
 import { updateUI } from './ui.js';
-import { GAME_SPEED } from './config.js';
+import { FRAME_RATE } from './config.js';
 
 let gameState = createGameState();
 const canvas = document.getElementById('game-canvas');
@@ -20,7 +20,7 @@ function gameLoop() {
   render(gameState, canvas);
   updateUI(gameState);
 
-  setTimeout(gameLoop, 1000 / GAME_SPEED);
+  setTimeout(gameLoop, 1000 / FRAME_RATE);
 }
 
 handleInput(gameState);

@@ -1,6 +1,6 @@
 import { render } from './renderer.js';
 import { createGameState } from './game.js';
-import { GRID_SIZE } from './config.js';
+import { GRID_SIZE, CANVAS_WIDTH, CANVAS_HEIGHT, FOOD_COLOR, SNAKE_COLOR } from './config.js';
 
 describe('render', () => {
   let canvas;
@@ -9,8 +9,8 @@ describe('render', () => {
 
   beforeEach(() => {
     canvas = {
-      width: GRID_SIZE * 20,
-      height: GRID_SIZE * 20,
+      width: CANVAS_WIDTH,
+      height: CANVAS_HEIGHT,
       getContext: jest.fn(() => context),
     };
     context = {
@@ -28,23 +28,25 @@ describe('render', () => {
 
   it('should set canvas dimensions', () => {
     render(gameState, canvas);
-    expect(canvas.width).toBe(GRID_SIZE * 20);
-    expect(canvas.height).toBe(GRID_SIZE * 20);
+    expect(canvas.width).toBe(CANVAS_WIDTH);
+    expect(canvas.height).toBe(CANVAS_HEIGHT);
   });
 
   it('should draw the food', () => {
     render(gameState, canvas);
-    expect(context.fillRect).toHaveBeenCalledWith(
-      gameState.food.x * GRID_SIZE,
-      gameState.food.y * GRID_SIZE,
-      GRID_SIZE,
-      GRID_SIZE
-    );
+    gameState.food.forEach(foodItem => {
+      expect(context.fillRect).toHaveBeenCalledWith(
+        foodItem.x * GRID_SIZE,
+        foodItem.y * GRID_SIZE,
+        GRID_SIZE,
+        GRID_SIZE
+      );
+    });
   });
 
   it('should draw the snake', () => {
     render(gameState, canvas);
-    expect(context.fillStyle).toBe('green');
+    expect(context.fillStyle).toBe(SNAKE_COLOR);
     gameState.snake.body.forEach(segment => {
       expect(context.fillRect).toHaveBeenCalledWith(
         segment.x * GRID_SIZE,

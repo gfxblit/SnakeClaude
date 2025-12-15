@@ -2,7 +2,7 @@
  * @file Renders the game state on the canvas.
  */
 
-import { GRID_SIZE } from './config.js';
+import { GRID_SIZE, CANVAS_WIDTH, CANVAS_HEIGHT, FOOD_COLOR, SNAKE_COLOR } from './config.js';
 
 /**
  * Renders the game state on the canvas.
@@ -16,16 +16,18 @@ export function render(gameState, canvas) {
   context.clearRect(0, 0, canvas.width, canvas.height);
 
   // Set canvas dimensions based on grid size
-  canvas.width = GRID_SIZE * 20;
-  canvas.height = GRID_SIZE * 20;
+  canvas.width = CANVAS_WIDTH;
+  canvas.height = CANVAS_HEIGHT;
 
 
   // Draw food
-  context.fillStyle = 'red';
-  context.fillRect(gameState.food.x * GRID_SIZE, gameState.food.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+  context.fillStyle = FOOD_COLOR;
+  gameState.food.forEach(foodItem => {
+    context.fillRect(foodItem.x * GRID_SIZE, foodItem.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+  });
 
   // Draw snake
-  context.fillStyle = 'green';
+  context.fillStyle = SNAKE_COLOR;
   gameState.snake.body.forEach(segment => {
     context.fillRect(segment.x * GRID_SIZE, segment.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
   });
