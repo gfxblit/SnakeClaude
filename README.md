@@ -28,7 +28,7 @@ Here's the dev flow:
 ## Project Management
 This project utilizes GitHub Issues for task management and roadmap tracking.
 
-- **Roadmap Issue:** A central "Laserbyte Development Roadmap" [issue](https://github.com/gfxblit/SnakeClaude/issues/1) serves as the project's master tracking document. It contains an exhaustive checklist of all tasks and their corresponding GitHub Issues.
+- **Roadmap Issue:** A central "Laserbyte Development Roadmap" [issue](https://github.com/gfxblit/SnakeClaude/issues/1) serves as the project's master tracking document. It contains an exhaustive checklist of all tasks and their corresponding GitHub Issues. Tasks that need to be sequenced have increasing numbers. Parallelizable tasks are under "Dev A", "Dev B", etc.
 - **Epics as Milestones:** Major development phases (Epics) are tracked using GitHub Milestones, providing a high-level view of progress.
 - **Task Issues:** Individual, actionable tasks are managed as separate GitHub Issues, each linked back to the roadmap.
 - **Labels for Clarity:**
