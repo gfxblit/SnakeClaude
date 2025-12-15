@@ -5,6 +5,7 @@ This is an agentic development flow to make the Snake game, written in Javascrip
 The dev flow requires this as input:
 - The game design document (GDD) is `docs/game_design.md`. The GDD describes what the game is, how its played, etc.
 - The game architecture is described in `docs/architecture.md`. The architecture doc describes high level: how game state is managed, player inputs, etc; and low level: programming language, test frameworks, etc.
+- The roadmap [issue](https://github.com/gfxblit/SnakeClaude/issues/1), tracking the work.
 - CLAUDE.md describes the agent behavior, using test-driven development
 
 Here's the dev flow:
@@ -19,9 +20,10 @@ Here's the dev flow:
 (note: multiple Claudes may be working on separate issues in parallel)
 
 ## Infrastructure
-- TODO
+- After a PR is created, Claude performs a code-review (see claude-code-reviewer.yml)
+- In parallel, the PR triggers a deployment to gh-pages under https://<username>.github.io/<project-name>/pr-<pr-number>. For example, `https://gfxblit.github.io/SnakeClaude/pr-123`.This allows the human to review the PR and preview the change.
 - Github deployment using gh-pages
-
+- Once the PR is approved and Claude merges the PR to main, this will kickoff a gh-pages main deployment to https://<username>.github.io/<project-name>/, e.g. `https://gfxblit.github.io/SnakeClaude`. 
 
 ## Project Management
 This project utilizes GitHub Issues for task management and roadmap tracking.
