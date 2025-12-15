@@ -50,3 +50,21 @@ export function createGameState() {
     status: GameStatus.PLAYING,
   };
 }
+
+/**
+ * Calculates the new direction based on the current direction and a turn input.
+ * @param {string} currentDirection The snake's current direction (from Direction enum).
+ * @param {string} turn The turn input ('LEFT' or 'RIGHT').
+ * @returns {string} The new direction (from Direction enum).
+ */
+export function getNewDirection(currentDirection, turn) {
+  const directions = [Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT];
+  const currentIndex = directions.indexOf(currentDirection);
+
+  if (turn === 'LEFT') {
+    return directions[(currentIndex + directions.length - 1) % directions.length];
+  } else if (turn === 'RIGHT') {
+    return directions[(currentIndex + 1) % directions.length];
+  }
+  return currentDirection; // Should not happen
+}

@@ -1,4 +1,4 @@
-import { Direction, DirectionVector } from './game.js';
+import { Direction, DirectionVector, getNewDirection } from './game.js';
 
 /**
  * @file Handles player input.
@@ -12,25 +12,11 @@ import { Direction, DirectionVector } from './game.js';
 export function handleInput(gameState) {
   const handleKeyDown = (e) => {
     switch (e.key) {
-      case 'ArrowUp':
-        if (gameState.snake.direction !== Direction.DOWN) {
-          gameState.snake.direction = Direction.UP;
-        }
-        break;
-      case 'ArrowDown':
-        if (gameState.snake.direction !== Direction.UP) {
-          gameState.snake.direction = Direction.DOWN;
-        }
-        break;
       case 'ArrowLeft':
-        if (gameState.snake.direction !== Direction.RIGHT) {
-          gameState.snake.direction = Direction.LEFT;
-        }
+        gameState.snake.direction = getNewDirection(gameState.snake.direction, 'LEFT');
         break;
       case 'ArrowRight':
-        if (gameState.snake.direction !== Direction.LEFT) {
-          gameState.snake.direction = Direction.RIGHT;
-        }
+        gameState.snake.direction = getNewDirection(gameState.snake.direction, 'RIGHT');
         break;
     }
   };
@@ -54,18 +40,14 @@ export function handleInput(gameState) {
 
     if (Math.abs(dx) > Math.abs(dy)) {
       // Horizontal swipe
-      if (dx > 0 && gameState.snake.direction !== Direction.LEFT) {
-        gameState.snake.direction = Direction.RIGHT;
-      } else if (dx < 0 && gameState.snake.direction !== Direction.RIGHT) {
-        gameState.snake.direction = Direction.LEFT;
+      if (dx > 0) { // Swipe Right
+        gameState.snake.direction = getNewDirection(gameState.snake.direction, 'RIGHT');
+      } else if (dx < 0) { // Swipe Left
+        gameState.snake.direction = getNewDirection(gameState.snake.direction, 'LEFT');
       }
     } else {
-      // Vertical swipe
-      if (dy > 0 && gameState.snake.direction !== Direction.UP) {
-        gameState.snake.direction = Direction.DOWN;
-      } else if (dy < 0 && gameState.snake.direction !== Direction.DOWN) {
-        gameState.snake.direction = Direction.UP;
-      }
+      // Vertical swipe - for relative controls, vertical swipe does nothing.
+      // This could be customized for "accelerate" or "decelerate" if needed.
     }
   };
 
