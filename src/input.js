@@ -5,9 +5,10 @@
 /**
  * Sets up input handling for the game.
  * @param {object} gameState The game state to modify based on input.
+ * @returns {function} A function to remove the event listener.
  */
 export function handleInput(gameState) {
-  document.addEventListener('keydown', (e) => {
+  const handleKeyDown = (e) => {
     switch (e.key) {
       case 'ArrowUp':
         if (gameState.snake.direction.y === 0) {
@@ -30,5 +31,11 @@ export function handleInput(gameState) {
         }
         break;
     }
-  });
+  };
+
+  document.addEventListener('keydown', handleKeyDown);
+
+  return () => {
+    document.removeEventListener('keydown', handleKeyDown);
+  };
 }
