@@ -22,6 +22,7 @@ Here's the dev flow:
 ## Infrastructure
 - After a PR is created, Claude performs a code-review (see claude-code-reviewer.yml)
 - In parallel, the PR triggers a deployment to gh-pages under https://<username>.github.io/<project-name>/pr-<pr-number>. For example, `https://gfxblit.github.io/SnakeClaude/pr-123`.This allows the human to review the PR and preview the change.
+- The `gh-pages` branch is maintained as an empty branch, solely used to host the compiled static assets for deployment.
 - Github deployment using gh-pages
 - Once the PR is approved and Claude merges the PR to main, this will kickoff a gh-pages main deployment to https://<username>.github.io/<project-name>/, e.g. `https://gfxblit.github.io/SnakeClaude`. 
 
