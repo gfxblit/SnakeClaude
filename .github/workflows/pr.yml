@@ -3,6 +3,9 @@ name: CI
 on:
   pull_request:
     types: [opened, synchronize]
+  push:
+    branches:
+      - main
     # Optional: Only run on specific file changes
     # paths:
     #   - "src/**/*.ts"
@@ -57,10 +60,12 @@ jobs:
 
   build:
     if: |
-      github.event.pull_request.author_association == 'OWNER' ||
-      github.event.pull_request.author_association == 'MEMBER' ||
-      github.event.pull_request.author_association == 'COLLABORATOR' ||
-      github.event.pull_request.author_association == 'CONTRIBUTOR'
+      (github.event_name == 'pull_request' && (
+        github.event.pull_request.author_association == 'OWNER' ||
+        github.event.pull_request.author_association == 'MEMBER' ||
+        github.event.pull_request.author_association == 'COLLABORATOR' ||
+        github.event.pull_request.author_association == 'CONTRIBUTOR'
+      )) || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -68,7 +73,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref }}
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -147,43 +152,40 @@ jobs:
               body: `🐍 **Preview Deployed!**\n\n**Preview URL:** ${previewUrl}`
             });
 
-  # deploy-production:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #   environment:
-  #     name: production
-  #     url: https://gfxblit.github.io/SnakeClaude/
-  #
-  #   # IMPORTANT: Before enabling this job, create the 'production' environment:
-  #   # 1. Go to Settings → Environments → New environment
-  #   # 2. Name: production
-  #   # 3. Enable "Required reviewers" and add yourself
-  #   # 4. Save protection rules
-  #   #
-  #   # This ensures manual approval is required before production deployment.
-  #
-  #   steps:
-  #     - name: Checkout gh-pages branch
-  #       uses: actions/checkout@v4
-  #       with:
-  #         ref: gh-pages
-  #         fetch-depth: 0
-  #
-  #     - name: Download Build Artifact
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: build
-  #         path: .
-  #
-  #     - name: Configure Git
-  #       run: |
-  #         git config user.name "github-actions[bot]"
-  #         git config user.email "github-actions[bot]@users.noreply.github.com"
-  #
-  #     - name: Commit and push production
-  #       run: |
-  #         git add .
-  #         git commit -m "Deploy production build from ${{ github.sha }}" || echo "No changes to commit"
-  #         git push origin gh-pages
+  deploy-production:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Changed to write to allow pushing to gh-pages
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://gfxblit.github.io/SnakeClaude/
+
+    steps:
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          fetch-depth: 0
+
+      - name: Clean existing files (except .git)
+        run: |
+          ls -A | grep -v '^\.git$' | xargs rm -rf
+
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: .
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push production
+        run: |
+          git add .
+          git commit -m "Deploy production build from ${{ github.sha }}" || echo "No changes to commit"
+          git push origin gh-pages
