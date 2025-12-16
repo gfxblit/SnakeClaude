@@ -57,6 +57,13 @@ export function handleInput(gameState) {
       } else if (dx < 0) { // Swipe Left
         gameState.snake.direction = getNewDirection(gameState.snake.direction, 'LEFT');
       }
+    } else if (Math.abs(dy) > Math.abs(dx)) {
+      // Vertical swipe
+      if (dy > 0) { // Swipe Down
+        gameState.snake.direction = getNewDirection(gameState.snake.direction, 'DOWN');
+      } else if (dy < 0) { // Swipe Up
+        gameState.snake.direction = getNewDirection(gameState.snake.direction, 'UP');
+      }
     }
   };
 

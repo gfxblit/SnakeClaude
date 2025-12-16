@@ -86,6 +86,21 @@ function updateHighScore(gameState) {
  * @returns {string} The new direction (from Direction enum).
  */
 export function getNewDirection(currentDirection, turn) {
+    // Prevent 180-degree turns
+    if (
+        (currentDirection === Direction.UP && turn === Direction.DOWN) ||
+        (currentDirection === Direction.DOWN && turn === Direction.UP) ||
+        (currentDirection === Direction.LEFT && turn === Direction.RIGHT) ||
+        (currentDirection === Direction.RIGHT && turn === Direction.LEFT)
+    ) {
+        return currentDirection; // Ignore the turn, maintain current direction
+    }
+
+    // If the turn is a direct direction, return it
+    if (Object.values(Direction).includes(turn)) {
+        return turn;
+    }
+
     const directions = [
         Direction.UP,
         Direction.RIGHT,
@@ -98,7 +113,7 @@ export function getNewDirection(currentDirection, turn) {
     } else if (turn === "RIGHT") {
         return directions[(currentIndex + 1) % directions.length];
     }
-    return currentDirection; // Should not happen
+    return currentDirection; // Should not happen with valid input
 }
 
 /**
