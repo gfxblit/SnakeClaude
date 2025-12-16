@@ -24,11 +24,16 @@ Here's the dev flow:
 - In parallel, the PR triggers a deployment to gh-pages under https://<username>.github.io/<project-name>/pr-<pr-number>. For example, `https://gfxblit.github.io/SnakeClaude/pr-123`.This allows the human to review the PR and preview the change.
 - The `gh-pages` branch is maintained as an empty branch, solely used to host the compiled static assets for deployment.
 - Github deployment using gh-pages
-- Once the PR is approved and Claude merges the PR to main, this will kickoff a gh-pages main deployment to https://<username>.github.io/<project-name>/, e.g. `https://gfxblit.github.io/SnakeClaude`. 
+- Once the PR is approved and Claude merges the PR to main, this will kickoff a gh-pages main deployment to https://<username>.github.io/<project-name>/, e.g. `https://gfxblit.github.io/SnakeClaude`.
+
+## Build Workflow
+To get started with local development and deploy the project:
+
+*   **Build for Deployment**: To create optimized, production-ready files, run `npm run build`. This command will generate a `dist/` folder containing `bundle.js` and `index.html`.
+*   **Deployment**: The contents of the `dist/` folder are ready for deployment.
 
 ## Project Management
 This project utilizes GitHub Issues for task management and roadmap tracking.
-
 - **Roadmap Issue:** A central "Laserbyte Development Roadmap" [issue](https://github.com/gfxblit/SnakeClaude/issues/1) serves as the project's master tracking document. It contains an exhaustive checklist of all tasks and their corresponding GitHub Issues. Tasks that need to be sequenced have increasing numbers. Parallelizable tasks are under "Dev A", "Dev B", etc.
 - **Epics as Milestones:** Major development phases (Epics) are tracked using GitHub Milestones, providing a high-level view of progress.
 - **Task Issues:** Individual, actionable tasks are managed as separate GitHub Issues, each linked back to the roadmap.
