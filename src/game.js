@@ -3,7 +3,7 @@
  */
 import { GRID_SIZE } from "./config.js";
 
-const HIGH_SCORE_KEY = 'snakeHighScore';
+const HIGH_SCORE_KEY = "snakeClaudeHighScore";
 
 /**
  * Represents the different states of the game.
@@ -39,9 +39,6 @@ export const DirectionVector = Object.freeze({
  * @returns {object} The initial game state.
  */
 export function createGameState() {
-    const storedHighScore = localStorage.getItem(HIGH_SCORE_KEY);
-    const highScore = storedHighScore ? parseInt(storedHighScore, 10) : 0;
-
     return {
         snake: {
             body: [{ x: 10, y: 10 }],
@@ -49,10 +46,39 @@ export function createGameState() {
         },
         food: [{ x: 5, y: 5 }], // This will be replaced by generateFood in startGame
         score: 0,
-        highScore: highScore,
+        highScore: loadHighScore(),
         status: GameStatus.MAIN_MENU,
     };
 }
+
+/**
+ * Loads the high score from local storage.
+ * @returns {number} The high score.
+ */
+function loadHighScore() {
+    const highScore = localStorage.getItem(HIGH_SCORE_KEY);
+    return highScore ? parseInt(highScore, 10) : 0;
+}
+
+/**
+ * Saves the high score to local storage.
+ * @param {number} score The high score to save.
+ */
+function saveHighScore(score) {
+    localStorage.setItem(HIGH_SCORE_KEY, score.toString());
+}
+
+/**
+ * Updates the high score if the current score is greater.
+ * @param {object} gameState The current game state.
+ */
+function updateHighScore(gameState) {
+    if (gameState.score > gameState.highScore) {
+        gameState.highScore = gameState.score;
+        saveHighScore(gameState.highScore);
+    }
+}
+
 /**
  * Calculates the new direction based on the current direction and a turn input.
  * @param {string} currentDirection The snake's current direction (from Direction enum).
@@ -60,6 +86,21 @@ export function createGameState() {
  * @returns {string} The new direction (from Direction enum).
  */
 export function getNewDirection(currentDirection, turn) {
+    // Prevent 180-degree turns
+    if (
+        (currentDirection === Direction.UP && turn === Direction.DOWN) ||
+        (currentDirection === Direction.DOWN && turn === Direction.UP) ||
+        (currentDirection === Direction.LEFT && turn === Direction.RIGHT) ||
+        (currentDirection === Direction.RIGHT && turn === Direction.LEFT)
+    ) {
+        return currentDirection; // Ignore the turn, maintain current direction
+    }
+
+    // If the turn is a direct direction, return it
+    if (Object.values(Direction).includes(turn)) {
+        return turn;
+    }
+
     const directions = [
         Direction.UP,
         Direction.RIGHT,
@@ -72,8 +113,9 @@ export function getNewDirection(currentDirection, turn) {
     } else if (turn === "RIGHT") {
         return directions[(currentIndex + 1) % directions.length];
     }
-    return currentDirection; // Should not happen
+    return currentDirection; // Should not happen with valid input
 }
+
 /**
  * Starts or restarts the game.
  * @param {object} gameState The current game state.
@@ -86,7 +128,9 @@ export function startGame(gameState) {
     };
     gameState.food = [generateFood(gameState)];
     gameState.score = 0;
+    gameState.highScore = loadHighScore();
 }
+
 /**
  * Moves the snake and handles game logic like eating food.
  * @param {object} gameState The current game state.
@@ -108,6 +152,16 @@ export function moveSnake(gameState) {
         snake.body.pop(); // Remove tail
     }
 }
+
+/**
+ * Updates the game state when the game is over.
+ * @param {object} gameState The current game state.
+ */
+export function updateGameStateOnGameOver(gameState) {
+    gameState.status = GameStatus.GAME_OVER;
+    updateHighScore(gameState);
+}
+
 /**
  * Checks for collisions with walls or the snake's own body.
  * @param {object} gameState The current game state.
@@ -116,8 +170,6 @@ export function moveSnake(gameState) {
 export function checkCollision(gameState) {
     const { snake } = gameState;
     const head = snake.body[0];
-    let collisionOccurred = false;
-
     // Wall collision
     if (
         head.x < 0 ||
@@ -125,27 +177,17 @@ export function checkCollision(gameState) {
         head.y < 0 ||
         head.y >= GRID_SIZE
     ) {
-        collisionOccurred = true;
+        return true;
     }
-
     // Self collision
     for (let i = 1; i < snake.body.length; i++) {
         if (head.x === snake.body[i].x && head.y === snake.body[i].y) {
-            collisionOccurred = true;
-            break; // No need to check further after self-collision
+            return true;
         }
     }
-
-    if (collisionOccurred) {
-        if (gameState.score > gameState.highScore) {
-            gameState.highScore = gameState.score;
-            localStorage.setItem(HIGH_SCORE_KEY, gameState.highScore.toString());
-        }
-        return true;
-    }
-
     return false;
 }
+
 /**
  * Generates a new food item at a random position.
  * @param {object} gameState The current game state, used to avoid placing food on the snake.
