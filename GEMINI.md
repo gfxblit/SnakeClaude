@@ -11,3 +11,8 @@
 - Do your work in that worktree
 - commit changes in the worktree and push to origin
 
+## Fetching Inline PR Comments
+To fetch inline PR comments (review comments), use the GitHub CLI `gh api` command with the appropriate REST API endpoint.
+Example: `gh api repos/{owner}/{repo}/pulls/{pull_number}/comments`
+Replace `{owner}`, `{repo}`, and `{pull_number}` with the actual values. This command returns a JSON array of comments, each containing details like `body`, `path`, `line`, and `diff_hunk`.
+
