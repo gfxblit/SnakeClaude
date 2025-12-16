@@ -1,7 +1,7 @@
 /**
  * @file Manages the core game logic and state.
  */
-import { GRID_SIZE, GAME_SPEED_INITIAL_DELAY_FRAMES } from "./config.js";
+import { GRID_SIZE, SNAKE_SPEED_CELLS_PER_SECOND, FRAME_RATE } from "./config.js";
 /**
  * Represents the different states of the game.
  * @enum {string}
@@ -44,9 +44,10 @@ export function createGameState() {
         food: [{ x: 5, y: 5 }], // This will be replaced by generateFood in startGame
         score: 0,
         status: GameStatus.MAIN_MENU,
-        currentSnakeSpeedDelay: GAME_SPEED_INITIAL_DELAY_FRAMES, // Initial speed delay
+        framesPerMove: Math.round(FRAME_RATE / SNAKE_SPEED_CELLS_PER_SECOND), // Initial frames per snake movement
+        currentSnakeSpeedCellsPerSecond: SNAKE_SPEED_CELLS_PER_SECOND, // Initial speed in cells per second
         snakeMoveCounter: 0, // Counter for snake movement
-        lastScoreForSpeedDecrease: 0, // Track score when speed was last decreased
+        lastScoreForSpeedIncrease: 0, // Track score when speed was last increased
     };
 }
 /**
@@ -82,9 +83,10 @@ export function startGame(gameState) {
     };
     gameState.food = [generateFood(gameState)];
     gameState.score = 0;
-    gameState.currentSnakeSpeedDelay = GAME_SPEED_INITIAL_DELAY_FRAMES; // Reset speed on new game
+    gameState.framesPerMove = Math.round(FRAME_RATE / SNAKE_SPEED_CELLS_PER_SECOND); // Reset frames per move
+    gameState.currentSnakeSpeedCellsPerSecond = SNAKE_SPEED_CELLS_PER_SECOND; // Reset speed in cells per second
     gameState.snakeMoveCounter = 0; // Reset counter on new game
-    gameState.lastScoreForSpeedDecrease = 0; // Reset on new game
+    gameState.lastScoreForSpeedIncrease = 0; // Reset on new game
 }
 /**
  * Moves the snake and handles game logic like eating food.
