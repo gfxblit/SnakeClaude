@@ -2,6 +2,9 @@
  * @file Manages the core game logic and state.
  */
 import { GRID_SIZE } from "./config.js";
+
+const HIGH_SCORE_KEY = 'snakeHighScore';
+
 /**
  * Represents the different states of the game.
  * @enum {string}
@@ -17,7 +20,7 @@ export const GameStatus = Object.freeze({
  */
 export const Direction = Object.freeze({
     UP: "Up",
-    DOWN: "Down",
+    DOWN: "DOWN",
     LEFT: "Left",
     RIGHT: "Right",
 });
@@ -36,6 +39,9 @@ export const DirectionVector = Object.freeze({
  * @returns {object} The initial game state.
  */
 export function createGameState() {
+    const storedHighScore = localStorage.getItem(HIGH_SCORE_KEY);
+    const highScore = storedHighScore ? parseInt(storedHighScore, 10) : 0;
+
     return {
         snake: {
             body: [{ x: 10, y: 10 }],
@@ -43,6 +49,7 @@ export function createGameState() {
         },
         food: [{ x: 5, y: 5 }], // This will be replaced by generateFood in startGame
         score: 0,
+        highScore: highScore,
         status: GameStatus.MAIN_MENU,
     };
 }
@@ -116,11 +123,19 @@ export function checkCollision(gameState) {
         head.y < 0 ||
         head.y >= GRID_SIZE
     ) {
+        if (gameState.score > gameState.highScore) {
+            gameState.highScore = gameState.score;
+            localStorage.setItem(HIGH_SCORE_KEY, gameState.highScore.toString());
+        }
         return true;
     }
     // Self collision
     for (let i = 1; i < snake.body.length; i++) {
         if (head.x === snake.body[i].x && head.y === snake.body[i].y) {
+            if (gameState.score > gameState.highScore) {
+                gameState.highScore = gameState.score;
+                localStorage.setItem(HIGH_SCORE_KEY, gameState.highScore.toString());
+            }
             return true;
         }
     }
