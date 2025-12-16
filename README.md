@@ -25,6 +25,7 @@ Here's the dev flow:
 - The `gh-pages` branch is maintained as an empty branch, solely used to host the compiled static assets for deployment.
 - Github deployment using gh-pages
 - Once the PR is approved and Claude merges the PR to main, this will kickoff a gh-pages main deployment to https://<username>.github.io/<project-name>/, e.g. `https://gfxblit.github.io/SnakeClaude`.
+- Protect your `main` branch by only allowing pull requests to update it. This keeps agents from directly pushing to origin/main, bypassing human review.
 
 ## Build Workflow
 To get started with local development and deploy the project:
