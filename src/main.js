@@ -3,7 +3,7 @@
  */
 
 import './styles.css';
-import { createGameState, GameStatus } from './game.js';
+import { createGameState, GameStatus, moveSnake, checkCollision } from './game.js';
 import { render } from './renderer.js';
 import { handleInput } from './input.js';
 import { updateUI } from './ui.js';
@@ -14,7 +14,10 @@ const canvas = document.getElementById('game-canvas');
 
 function gameLoop() {
   if (gameState.status === GameStatus.PLAYING) {
-    // Game logic will go here
+    moveSnake(gameState);
+    if (checkCollision(gameState)) {
+      gameState.status = GameStatus.GAME_OVER;
+    }
   }
 
   render(gameState, canvas);
