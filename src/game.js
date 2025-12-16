@@ -20,7 +20,7 @@ export const GameStatus = Object.freeze({
  */
 export const Direction = Object.freeze({
     UP: "Up",
-    DOWN: "DOWN",
+    DOWN: "Down",
     LEFT: "Left",
     RIGHT: "Right",
 });
@@ -116,6 +116,8 @@ export function moveSnake(gameState) {
 export function checkCollision(gameState) {
     const { snake } = gameState;
     const head = snake.body[0];
+    let collisionOccurred = false;
+
     // Wall collision
     if (
         head.x < 0 ||
@@ -123,22 +125,25 @@ export function checkCollision(gameState) {
         head.y < 0 ||
         head.y >= GRID_SIZE
     ) {
+        collisionOccurred = true;
+    }
+
+    // Self collision
+    for (let i = 1; i < snake.body.length; i++) {
+        if (head.x === snake.body[i].x && head.y === snake.body[i].y) {
+            collisionOccurred = true;
+            break; // No need to check further after self-collision
+        }
+    }
+
+    if (collisionOccurred) {
         if (gameState.score > gameState.highScore) {
             gameState.highScore = gameState.score;
             localStorage.setItem(HIGH_SCORE_KEY, gameState.highScore.toString());
         }
         return true;
     }
-    // Self collision
-    for (let i = 1; i < snake.body.length; i++) {
-        if (head.x === snake.body[i].x && head.y === snake.body[i].y) {
-            if (gameState.score > gameState.highScore) {
-                gameState.highScore = gameState.score;
-                localStorage.setItem(HIGH_SCORE_KEY, gameState.highScore.toString());
-            }
-            return true;
-        }
-    }
+
     return false;
 }
 /**
