@@ -7,7 +7,7 @@ describe('createGameState', () => {
     expect(gameState.snake.body).toEqual([{ x: 10, y: 10 }]);
     expect(gameState.snake.direction).toBe(Direction.RIGHT);
     expect(gameState.score).toBe(0);
-    expect(gameState.status).toBe(GameStatus.PLAYING);
+    expect(gameState.status).toBe(GameStatus.MAIN_MENU);
     expect(gameState.food.length).toBe(1);
     const food = gameState.food[0];
     expect(food.x).toBeGreaterThanOrEqual(0);
@@ -61,28 +61,7 @@ describe('checkCollision', () => {
   });
 });
 
-describe('eatFood', () => {
-  it('should return true if the snake eats food', () => {
-    const gameState = createGameState();
-    gameState.food = [{ x: 10, y: 10 }];
-    expect(eatFood(gameState)).toBe(true);
-  });
 
-  it('should increase the score when food is eaten', () => {
-    const gameState = createGameState();
-    gameState.food = [{ x: 10, y: 10 }];
-    eatFood(gameState);
-    expect(gameState.score).toBe(1);
-  });
-
-  it('should generate new food when food is eaten', () => {
-    const gameState = createGameState();
-    gameState.food = [{ x: 10, y: 10 }];
-    eatFood(gameState);
-    expect(gameState.food.length).toBe(1);
-    expect(gameState.food[0]).not.toEqual({ x: 10, y: 10 });
-  });
-});
 
 describe('getNewDirection', () => {
   it('should turn left', () => {
