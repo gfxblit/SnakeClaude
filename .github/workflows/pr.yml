@@ -96,6 +96,8 @@ jobs:
 
   deploy-preview:
     needs: build
+    # prevent running on closed PRs, which can happen when a PR is merging to mainline
+    if: github.event_name == 'pull_request' && github.event.pull_request.state == 'open'
     runs-on: ubuntu-latest
     permissions:
       contents: write
