@@ -87,6 +87,11 @@ export function moveSnake(gameState) {
 
   gameState.snake.body.unshift(newHead);
 
+  if (checkCollision(gameState)) {
+    gameState.status = GameStatus.GAME_OVER;
+    return;
+  }
+
   if (!eatFood(gameState)) {
     gameState.snake.body.pop();
   }

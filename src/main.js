@@ -12,16 +12,19 @@ import { FRAME_RATE } from './config.js';
 let gameState = createGameState();
 const canvas = document.getElementById('game-canvas');
 
+function restartGame() {
+  gameState = createGameState();
+  gameState.status = GameStatus.PLAYING;
+  gameLoop();
+}
+
 function gameLoop() {
   if (gameState.status === GameStatus.PLAYING) {
     moveSnake(gameState);
-    if (checkCollision(gameState)) {
-      gameState.status = GameStatus.GAME_OVER;
-    }
   }
 
   render(gameState, canvas);
-  updateUI(gameState);
+  updateUI(gameState, restartGame);
 
   setTimeout(gameLoop, 1000 / FRAME_RATE);
 }
