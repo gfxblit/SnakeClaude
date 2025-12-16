@@ -1,4 +1,4 @@
-import { Direction, DirectionVector, getNewDirection } from './game.js';
+import { Direction, getNewDirection, GameStatus, startGame } from './game.js';
 
 /**
  * @file Handles player input.
@@ -11,12 +11,22 @@ import { Direction, DirectionVector, getNewDirection } from './game.js';
  */
 export function handleInput(gameState) {
   const handleKeyDown = (e) => {
-    switch (e.key) {
-      case 'ArrowLeft':
-        gameState.snake.direction = getNewDirection(gameState.snake.direction, 'LEFT');
+    switch (gameState.status) {
+      case GameStatus.MAIN_MENU:
+      case GameStatus.GAME_OVER:
+        if (e.key === 'Enter') {
+          startGame(gameState);
+        }
         break;
-      case 'ArrowRight':
-        gameState.snake.direction = getNewDirection(gameState.snake.direction, 'RIGHT');
+      case GameStatus.PLAYING:
+        switch (e.key) {
+          case 'ArrowLeft':
+            gameState.snake.direction = getNewDirection(gameState.snake.direction, 'LEFT');
+            break;
+          case 'ArrowRight':
+            gameState.snake.direction = getNewDirection(gameState.snake.direction, 'RIGHT');
+            break;
+        }
         break;
     }
   };
@@ -27,11 +37,13 @@ export function handleInput(gameState) {
   let touchStartY = 0;
 
   const handleTouchStart = (e) => {
+    if (gameState.status !== GameStatus.PLAYING) return;
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
   };
 
   const handleTouchEnd = (e) => {
+    if (gameState.status !== GameStatus.PLAYING) return;
     const touchEndX = e.changedTouches[0].clientX;
     const touchEndY = e.changedTouches[0].clientY;
 
@@ -45,18 +57,26 @@ export function handleInput(gameState) {
       } else if (dx < 0) { // Swipe Left
         gameState.snake.direction = getNewDirection(gameState.snake.direction, 'LEFT');
       }
-    } else {
-      // Vertical swipe - for relative controls, vertical swipe does nothing.
-      // This could be customized for "accelerate" or "decelerate" if needed.
     }
   };
 
   document.addEventListener('touchstart', handleTouchStart);
   document.addEventListener('touchend', handleTouchEnd);
 
+  // Handle Enter key for main menu and game over on touch devices
+  const handleTouchTap = (e) => {
+    if (gameState.status === GameStatus.MAIN_MENU || gameState.status === GameStatus.GAME_OVER) {
+      startGame(gameState);
+    }
+  };
+
+  document.addEventListener('touchend', handleTouchTap);
+
+
   return () => {
     document.removeEventListener('keydown', handleKeyDown);
     document.removeEventListener('touchstart', handleTouchStart);
     document.removeEventListener('touchend', handleTouchEnd);
+    document.removeEventListener('touchend', handleTouchTap);
   };
 }
