@@ -2,6 +2,9 @@
  * @file Manages the core game logic and state.
  */
 import { GRID_SIZE } from "./config.js";
+
+const HIGH_SCORE_KEY = "snakeClaudeHighScore";
+
 /**
  * Represents the different states of the game.
  * @enum {string}
@@ -43,9 +46,39 @@ export function createGameState() {
         },
         food: [{ x: 5, y: 5 }], // This will be replaced by generateFood in startGame
         score: 0,
+        highScore: loadHighScore(),
         status: GameStatus.MAIN_MENU,
     };
 }
+
+/**
+ * Loads the high score from local storage.
+ * @returns {number} The high score.
+ */
+function loadHighScore() {
+    const highScore = localStorage.getItem(HIGH_SCORE_KEY);
+    return highScore ? parseInt(highScore, 10) : 0;
+}
+
+/**
+ * Saves the high score to local storage.
+ * @param {number} score The high score to save.
+ */
+function saveHighScore(score) {
+    localStorage.setItem(HIGH_SCORE_KEY, score.toString());
+}
+
+/**
+ * Updates the high score if the current score is greater.
+ * @param {object} gameState The current game state.
+ */
+function updateHighScore(gameState) {
+    if (gameState.score > gameState.highScore) {
+        gameState.highScore = gameState.score;
+        saveHighScore(gameState.highScore);
+    }
+}
+
 /**
  * Calculates the new direction based on the current direction and a turn input.
  * @param {string} currentDirection The snake's current direction (from Direction enum).
@@ -67,6 +100,7 @@ export function getNewDirection(currentDirection, turn) {
     }
     return currentDirection; // Should not happen
 }
+
 /**
  * Starts or restarts the game.
  * @param {object} gameState The current game state.
@@ -79,7 +113,9 @@ export function startGame(gameState) {
     };
     gameState.food = [generateFood(gameState)];
     gameState.score = 0;
+    gameState.highScore = loadHighScore();
 }
+
 /**
  * Moves the snake and handles game logic like eating food.
  * @param {object} gameState The current game state.
@@ -101,6 +137,16 @@ export function moveSnake(gameState) {
         snake.body.pop(); // Remove tail
     }
 }
+
+/**
+ * Updates the game state when the game is over.
+ * @param {object} gameState The current game state.
+ */
+export function updateGameStateOnGameOver(gameState) {
+    gameState.status = GameStatus.GAME_OVER;
+    updateHighScore(gameState);
+}
+
 /**
  * Checks for collisions with walls or the snake's own body.
  * @param {object} gameState The current game state.
@@ -126,6 +172,7 @@ export function checkCollision(gameState) {
     }
     return false;
 }
+
 /**
  * Generates a new food item at a random position.
  * @param {object} gameState The current game state, used to avoid placing food on the snake.

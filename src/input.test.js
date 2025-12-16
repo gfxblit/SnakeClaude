@@ -1,5 +1,5 @@
 import { handleInput } from './input.js';
-import { createGameState, Direction } from './game.js';
+import { createGameState, Direction, GameStatus } from './game.js';
 
 describe('handleInput', () => {
   let gameState;
@@ -7,6 +7,7 @@ describe('handleInput', () => {
 
   beforeEach(() => {
     gameState = createGameState();
+    gameState.status = GameStatus.PLAYING; // Ensure game is in playing state for input tests
     cleanupInput = handleInput(gameState);
   });
 

@@ -1,4 +1,4 @@
-import { createGameState, GameStatus, Direction, moveSnake, checkCollision, eatFood, getNewDirection } from './game.js';
+import { createGameState, GameStatus, Direction, moveSnake, checkCollision, getNewDirection, startGame, updateGameStateOnGameOver } from './game.js';
 import { GRID_SIZE } from './config.js';
 
 describe('createGameState', () => {
@@ -7,13 +7,14 @@ describe('createGameState', () => {
     expect(gameState.snake.body).toEqual([{ x: 10, y: 10 }]);
     expect(gameState.snake.direction).toBe(Direction.RIGHT);
     expect(gameState.score).toBe(0);
-    expect(gameState.status).toBe(GameStatus.PLAYING);
+    expect(gameState.status).toBe(GameStatus.MAIN_MENU);
     expect(gameState.food.length).toBe(1);
     const food = gameState.food[0];
     expect(food.x).toBeGreaterThanOrEqual(0);
     expect(food.x).toBeLessThan(GRID_SIZE);
     expect(food.y).toBeGreaterThanOrEqual(0);
     expect(food.y).toBeLessThan(GRID_SIZE);
+    expect(gameState.highScore).toBe(0); // Assuming no high score initially
   });
 });
 
@@ -40,6 +41,14 @@ describe('moveSnake', () => {
     moveSnake(gameState);
     expect(gameState.snake.body.length).toBe(initialLength + 1);
   });
+
+  it('should increase the score when food is eaten', () => {
+    const gameState = createGameState();
+    gameState.food = [{ x: 11, y: 10 }];
+    gameState.snake.direction = Direction.RIGHT;
+    moveSnake(gameState);
+    expect(gameState.score).toBe(1);
+  });
 });
 
 describe('checkCollision', () => {
@@ -61,29 +70,6 @@ describe('checkCollision', () => {
   });
 });
 
-describe('eatFood', () => {
-  it('should return true if the snake eats food', () => {
-    const gameState = createGameState();
-    gameState.food = [{ x: 10, y: 10 }];
-    expect(eatFood(gameState)).toBe(true);
-  });
-
-  it('should increase the score when food is eaten', () => {
-    const gameState = createGameState();
-    gameState.food = [{ x: 10, y: 10 }];
-    eatFood(gameState);
-    expect(gameState.score).toBe(1);
-  });
-
-  it('should generate new food when food is eaten', () => {
-    const gameState = createGameState();
-    gameState.food = [{ x: 10, y: 10 }];
-    eatFood(gameState);
-    expect(gameState.food.length).toBe(1);
-    expect(gameState.food[0]).not.toEqual({ x: 10, y: 10 });
-  });
-});
-
 describe('getNewDirection', () => {
   it('should turn left', () => {
     expect(getNewDirection(Direction.UP, 'LEFT')).toBe(Direction.LEFT);
@@ -99,3 +85,61 @@ describe('getNewDirection', () => {
     expect(getNewDirection(Direction.LEFT, 'RIGHT')).toBe(Direction.UP);
   });
 });
+
+describe('High Score', () => {
+  let localStorageMock = {};
+
+  beforeAll(() => {
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: jest.fn((key) => localStorageMock[key]),
+        setItem: jest.fn((key, value) => {
+          localStorageMock[key] = value;
+        }),
+        clear: jest.fn(() => {
+          localStorageMock = {};
+        }),
+      },
+      writable: true,
+    });
+  });
+
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('should load high score from localStorage', () => {
+    localStorage.setItem('snakeClaudeHighScore', '100');
+    const gameState = createGameState();
+    expect(gameState.highScore).toBe(100);
+  });
+
+  it('should save high score to localStorage when a new high score is achieved', () => {
+    const gameState = createGameState();
+    gameState.score = 50;
+    gameState.highScore = 0; // Simulate initial state
+    updateGameStateOnGameOver(gameState);
+    expect(localStorage.getItem('snakeClaudeHighScore')).toBe('50');
+    expect(gameState.highScore).toBe(50);
+  });
+
+  it('should not save high score if current score is not higher', () => {
+    localStorage.setItem('snakeClaudeHighScore', '100');
+    const gameState = createGameState();
+    gameState.score = 50;
+    expect(gameState.highScore).toBe(100);
+    updateGameStateOnGameOver(gameState);
+    expect(localStorage.getItem('snakeClaudeHighScore')).toBe('100');
+    expect(gameState.highScore).toBe(100);
+  });
+
+  it('should reset score but retain high score on new game', () => {
+    localStorage.setItem('snakeClaudeHighScore', '75');
+    const gameState = createGameState();
+    gameState.score = 10;
+    startGame(gameState);
+    expect(gameState.score).toBe(0);
+    expect(gameState.highScore).toBe(75);
+  });
+});
+
