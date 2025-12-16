@@ -226,3 +226,5 @@ The project uses [Jest](https://jestjs.io/) for unit and integration testing and
     });
   });
   ```
+## Tools
+- use the `gh` cli to interact with issues, workflows, etc.
