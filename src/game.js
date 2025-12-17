@@ -1,10 +1,9 @@
 /**
  * @file Manages the core game logic and state.
  */
-import { GRID_SIZE } from "./config.js";
+import { GRID_SIZE, SNAKE_SPEED_CELLS_PER_SECOND, FRAME_RATE } from "./config.js";
 
 const HIGH_SCORE_KEY = 'snakeHighScore';
-
 /**
  * Represents the different states of the game.
  * @enum {string}
@@ -51,6 +50,10 @@ export function createGameState() {
         score: 0,
         highScore: highScore,
         status: GameStatus.MAIN_MENU,
+        framesPerMove: Math.round(FRAME_RATE / SNAKE_SPEED_CELLS_PER_SECOND), // Initial frames per snake movement
+        currentSnakeSpeedCellsPerSecond: SNAKE_SPEED_CELLS_PER_SECOND, // Initial speed in cells per second
+        snakeMoveCounter: 0, // Counter for snake movement
+        lastScoreForSpeedIncrease: 0, // Track score when speed was last increased
     };
 }
 /**
@@ -86,6 +89,10 @@ export function startGame(gameState) {
     };
     gameState.food = [generateFood(gameState)];
     gameState.score = 0;
+    gameState.framesPerMove = Math.round(FRAME_RATE / SNAKE_SPEED_CELLS_PER_SECOND); // Reset frames per move
+    gameState.currentSnakeSpeedCellsPerSecond = SNAKE_SPEED_CELLS_PER_SECOND; // Reset speed in cells per second
+    gameState.snakeMoveCounter = 0; // Reset counter on new game
+    gameState.lastScoreForSpeedIncrease = 0; // Reset on new game
 }
 /**
  * Moves the snake and handles game logic like eating food.
