@@ -1,15 +1,20 @@
 body {
-  font-family: sans-serif;
+  font-family: 'Press Start 2P', cursive;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f0f0f0;
+  background-color: #1a1a1a; /* Dark background for neon effect */
   position: relative;
+  overflow: hidden;
+  margin: 0;
+  height: 100vh;
+  color: #00FFFF; /* Neon blue text color */
 }
 
 #game-canvas {
-  border: 1px solid black;
-  background-color: #fff;
+  border: 2px solid #00FFFF; /* Neon blue border */
+  box-shadow: 0 0 15px #00FFFF, 0 0 25px #00FFFF, 0 0 35px #00FFFF, 0 0 5px #00FFFF inset; /* Neon blue glow */
+  background-color: #000; /* Dark background for canvas */
 }
 
 .screen {
@@ -22,9 +27,10 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
+  background-color: rgba(0, 0, 0, 0.7); /* Slightly darker overlay */
+  color: #00FFFF; /* Neon blue text color */
   text-align: center;
+  text-shadow: 0 0 7px #00FFFF, 0 0 10px #00FFFF, 0 0 15px #00FFFF; /* Neon text glow */
 }
 
 .hidden {
@@ -34,6 +40,7 @@ body {
 .title {
   font-size: 3rem;
   margin-bottom: 1rem;
+  text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF, 0 0 40px #00FFFF; /* More intense neon text glow for title */
 }
 
 .blink {

@@ -1,4 +1,4 @@
-import { createGameState, GameStatus, Direction, moveSnake, checkCollision, eatFood, getNewDirection } from './game.js';
+import { createGameState, GameStatus, Direction, moveSnake, checkCollision, getNewDirection } from './game.js';
 import { GRID_SIZE } from './config.js';
 
 describe('createGameState', () => {
@@ -60,8 +60,6 @@ describe('checkCollision', () => {
     expect(checkCollision(gameState)).toBe(false);
   });
 });
-
-
 
 describe('getNewDirection', () => {
   it('should turn left', () => {

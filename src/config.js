@@ -5,8 +5,11 @@
 export const GRID_SIZE = 20;
 export const CANVAS_WIDTH = GRID_SIZE * 20;
 export const CANVAS_HEIGHT = GRID_SIZE * 20;
-export const FOOD_COLOR = 'red';
-export const SNAKE_COLOR = 'green';
+export const NEON_RED = '#FF0033';
+export const NEON_GREEN = '#39FF14';
+export const NEON_BLUE = '#00FFFF';
+export const FOOD_COLOR = NEON_RED;
+export const SNAKE_COLOR = NEON_GREEN;
 export const FRAME_RATE = 5; // frames per second
 
 
