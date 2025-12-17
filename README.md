@@ -20,12 +20,13 @@ Here's the dev flow:
 (note: multiple Claudes may be working on separate issues in parallel)
 
 ## Infrastructure
-- After a PR is created, Claude performs a code-review (see claude-code-reviewer.yml)
-- In parallel, the PR triggers a deployment to gh-pages under https://<username>.github.io/<project-name>/pr-<pr-number>. For example, `https://gfxblit.github.io/SnakeClaude/pr-123`.This allows the human to review the PR and preview the change.
-- The `gh-pages` branch is maintained as an empty branch, solely used to host the compiled static assets for deployment.
-- Github deployment using gh-pages
-- Once the PR is approved and Claude merges the PR to main, this will kickoff a gh-pages main deployment to https://<username>.github.io/<project-name>/, e.g. `https://gfxblit.github.io/SnakeClaude`.
-- Protect your `main` branch by only allowing pull requests to update it. This keeps agents from directly pushing to origin/main, bypassing human review.
+- Human configuration
+  - Create the `gh-pages` branch, and configure githhub pages to use it. It is maintained as an empty branch, solely used to host the compiled static assets for deployment.
+  - Protect your `main` branch by only allowing pull requests to update it. This keeps agents from directly pushing to origin/main, bypassing human review. You can ask claude to use `gh` cli to configure this
+- Captured in `.github/workflows/pr.yml`
+  - After a PR is created, Claude performs a code-review (see claude-code-reviewer.yml)
+  - In parallel, the PR triggers a deployment to gh-pages under https://<username>.github.io/<project-name>/pr-<pr-number>. For example, `https://gfxblit.github.io/SnakeClaude/pr-123`.This allows the human to review the PR and preview the change.
+  - Once the PR is approved and Claude merges the PR to main, this will kickoff a gh-pages main deployment to https://<username>.github.io/<project-name>/, e.g. `https://gfxblit.github.io/SnakeClaude`.
 
 ## Build Workflow
 To get started with local development and deploy the project:
