@@ -1,4 +1,5 @@
 .gemini/
+.claude/
 gha-creds-*.json
 .env
 node_modules
