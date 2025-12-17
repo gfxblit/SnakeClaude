@@ -40,7 +40,6 @@ body {
 .title {
   font-size: 3rem;
   margin-bottom: 1rem;
-  text-shadow: 0 0 8px #00FFFF, 0 0 15px #00FFFF; /* Reduced neon text glow for title */
 }
 
 .blink {
